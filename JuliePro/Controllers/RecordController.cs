@@ -10,23 +10,23 @@ using JuliePro.Models;
 
 namespace JuliePro.Controllers
 {
-    public class RecordsController : Controller
+    public class RecordController : Controller
     {
         private readonly JulieProDbContext _context;
 
-        public RecordsController(JulieProDbContext context)
+        public RecordController(JulieProDbContext context)
         {
             _context = context;
         }
 
-        // GET: Records
+        // GET: Record
         public async Task<IActionResult> Index()
         {
             var julieProDbContext = _context.Records.Include(@ => @.Discipline).Include(@ => @.Trainer);
             return View(await julieProDbContext.ToListAsync());
         }
 
-        // GET: Records/Details/5
+        // GET: Record/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,7 +46,7 @@ namespace JuliePro.Controllers
             return View(@record);
         }
 
-        // GET: Records/Create
+        // GET: Record/Create
         public IActionResult Create()
         {
             ViewData["Discipline_Id"] = new SelectList(_context.Disciplines, "Id", "Id");
@@ -54,7 +54,7 @@ namespace JuliePro.Controllers
             return View();
         }
 
-        // POST: Records/Create
+        // POST: Record/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -72,7 +72,7 @@ namespace JuliePro.Controllers
             return View(@record);
         }
 
-        // GET: Records/Edit/5
+        // GET: Record/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -90,7 +90,7 @@ namespace JuliePro.Controllers
             return View(@record);
         }
 
-        // POST: Records/Edit/5
+        // POST: Record/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -127,7 +127,7 @@ namespace JuliePro.Controllers
             return View(@record);
         }
 
-        // GET: Records/Delete/5
+        // GET: Record/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -147,7 +147,7 @@ namespace JuliePro.Controllers
             return View(@record);
         }
 
-        // POST: Records/Delete/5
+        // POST: Record/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
