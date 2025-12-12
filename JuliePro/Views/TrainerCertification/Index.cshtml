@@ -1,0 +1,111 @@
+﻿@model IEnumerable<JuliePro.Models.TrainerCertification>
+
+<script>
+    // TODO: Ajouter la méthode highlightByName()
+    function highlightByName() {
+        let a = document.getElementById("highlightinput").value
+            .toLowerCase()
+            .trim();
+
+        let b = document.querySelectorAll("table tbody tr");
+
+        b.forEach(row => {
+            let c = row.cells[0].innerText.toLowerCase();
+
+            if (a !== "" && c.includes(a)) {
+                row.style.backgroundColor = "yellow";
+            } else {
+                row.style.backgroundColor = "";
+            }
+        });
+    }
+    // TODO: Ajouter la méthode filterByDate()
+    function filterByDate() {
+
+        const a = document.getElementById("DateValue").value.trim();
+
+        const b = document.getElementsByClassName("TrainersDate");
+
+        const c = document.getElementsByClassName("RowTrainers");
+
+        for(let i = 0; i < b.length; i++){
+
+            const d = c[i];
+
+            const e = b[i];
+
+            const f = e.textContent.trim();
+
+            if(a <= f){
+
+               d.style.display = ""
+
+            }
+            else{
+
+                d.style.display = "none";
+
+            }
+
+
+        }
+   
+    }
+
+</script>
+
+@{
+    ViewData["Title"] = @Locals["Index"];
+}
+
+<h1>@Locals["Index"]</h1>
+
+<p>
+    <a asp-action="Create">@Locals["Create New"]</a>
+</p>
+
+<h4>@Locals["HighlightByName"]</h4>
+<input id="highlightinput" type="text" oninput="highlightByName()" />
+
+<h4>@Locals["FilterByDate"]</h4>
+<input id="DateValue" type="date" />
+<button id="filterBySate" onclick="filterByDate()" class="btn btn-primary">@Locals["Filter"]</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Trainer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Certification)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateCertification)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr class="RowTrainers">
+            <td>
+                 <a asp-action="Filter" asp-controller="Trainer" asp-route-SearchNameText="@item.Trainer.FullName">
+                    @Html.DisplayFor(modelItem => item.Trainer.FullName)
+                </a>
+            </td>
+            <td>
+                <a asp-action="Details" asp-controller="Certification" asp-route-id="@item.Certification_Id">   @Html.DisplayFor(modelItem => item.Certification.FullTitle) </a>
+            </td>
+            <td class="TrainersDate">
+                @item.DateCertification.ToShortDateString()
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">@Locals["Edit"]</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">@Locals["Details"]</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">@Locals["Delete"]</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
