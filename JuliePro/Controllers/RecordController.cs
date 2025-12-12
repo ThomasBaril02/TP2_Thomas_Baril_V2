@@ -22,7 +22,7 @@ namespace JuliePro.Controllers
         // GET: Record
         public async Task<IActionResult> Index()
         {
-            var julieProDbContext = _context.Records.Include(@ => @.Discipline).Include(@ => @.Trainer);
+            var julieProDbContext = _context.Records.Include(a => a.Discipline).Include(a => a.Trainer);
             return View(await julieProDbContext.ToListAsync());
         }
 
@@ -35,8 +35,8 @@ namespace JuliePro.Controllers
             }
 
             var @record = await _context.Records
-                .Include(@ => @.Discipline)
-                .Include(@ => @.Trainer)
+                .Include(a => a.Discipline)
+                .Include(a => a.Trainer)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (@record == null)
             {
@@ -122,9 +122,11 @@ namespace JuliePro.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Discipline_Id"] = new SelectList(_context.Disciplines, "Id", "Id", @record.Discipline_Id);
-            ViewData["Trainer_Id"] = new SelectList(_context.Trainers, "Id", "Email", @record.Trainer_Id);
-            return View(@record);
+            var Model = new RecordViewModel();
+            Model.Categories = new SelectList(_context.Disciplines, "Id", "Id", @record.Discipline_Id);
+            Model.Statuses = new SelectList(_context.Trainers, "Id", "Email", @record.Trainer_Id);
+            Model.Record = @record;
+            return View(Model);
         }
 
         // GET: Record/Delete/5
@@ -136,8 +138,8 @@ namespace JuliePro.Controllers
             }
 
             var @record = await _context.Records
-                .Include(@ => @.Discipline)
-                .Include(@ => @.Trainer)
+                .Include(a => a.Discipline)
+                .Include(a => a.Trainer)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (@record == null)
             {
