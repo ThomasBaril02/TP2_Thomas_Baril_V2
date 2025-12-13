@@ -7,19 +7,22 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using JuliePro.Data;
 using JuliePro.Models;
+using JuliePro.Services;
 
 namespace JuliePro.Controllers
 {
     public class RecordController : Controller
     {
         private readonly JulieProDbContext _context;
-
-        public RecordController(JulieProDbContext context)
+        private readonly RecordService _recordService;
+        public RecordController(JulieProDbContext context, RecordService recordService)
         {
             _context = context;
+            _recordService = recordService;
         }
 
         // GET: Record
+        [Route("Record")]
         public async Task<IActionResult> Index()
         {
             var julieProDbContext = _context.Records.Include(a => a.Discipline).Include(a => a.Trainer);
@@ -47,11 +50,10 @@ namespace JuliePro.Controllers
         }
 
         // GET: Record/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["Discipline_Id"] = new SelectList(_context.Disciplines, "Id", "Id");
-            ViewData["Trainer_Id"] = new SelectList(_context.Trainers, "Id", "Email");
-            return View();
+            var record = await _recordService.BuildViewModelAsync();
+            return View(record);
         }
 
         // POST: Record/Create
@@ -59,17 +61,15 @@ namespace JuliePro.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Date,Discipline_Id,Amount,Unit,Trainer_Id")] Record @record)
+        public async Task<IActionResult> Create(RecordViewModel record)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(@record);
-                await _context.SaveChangesAsync();
+                var a = await _recordService.BuildViewModelAsync(record.Record);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Discipline_Id"] = new SelectList(_context.Disciplines, "Id", "Id", @record.Discipline_Id);
-            ViewData["Trainer_Id"] = new SelectList(_context.Trainers, "Id", "Email", @record.Trainer_Id);
-            return View(@record);
+            await _recordService.AddAsync(record.Record);
+            return View(record);
         }
 
         // GET: Record/Edit/5
@@ -80,14 +80,16 @@ namespace JuliePro.Controllers
                 return NotFound();
             }
 
-            var @record = await _context.Records.FindAsync(id);
-            if (@record == null)
+
+            var record = await _recordService.FindAsync(id.Value);
+            if (record == null)
             {
                 return NotFound();
             }
-            ViewData["Discipline_Id"] = new SelectList(_context.Disciplines, "Id", "Id", @record.Discipline_Id);
-            ViewData["Trainer_Id"] = new SelectList(_context.Trainers, "Id", "Email", @record.Trainer_Id);
-            return View(@record);
+
+            var vm = await _recordService.BuildViewModelAsync(record);
+
+            return View(vm);
         }
 
         // POST: Record/Edit/5
@@ -95,38 +97,30 @@ namespace JuliePro.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Date,Discipline_Id,Amount,Unit,Trainer_Id")] Record @record)
+        public async Task<IActionResult> Edit(int id, RecordViewModel vm)
         {
-            if (id != @record.Id)
-            {
+            if (id != vm.Record.Id)
                 return NotFound();
+
+            if (!ModelState.IsValid)
+            {
+                vm = await _recordService.BuildViewModelAsync(vm.Record);
+                return View(vm);
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(@record);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RecordExists(@record.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _recordService.UpdateAsync(vm.Record);
             }
-            var Model = new RecordViewModel();
-            Model.Categories = new SelectList(_context.Disciplines, "Id", "Id", @record.Discipline_Id);
-            Model.Statuses = new SelectList(_context.Trainers, "Id", "Email", @record.Trainer_Id);
-            Model.Record = @record;
-            return View(Model);
+            catch
+            {
+                if (!await _recordService.ExistsAsync(vm.Record.Id))
+                    return NotFound();
+
+                throw;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Record/Delete/5

@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Index">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Record.Id" />
             <div class="form-group">
@@ -19,9 +19,9 @@
                 <span asp-validation-for="Record.Date" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Record.Discipline_Id" class="control-label"></label>
-                <select asp-for="Record.Discipline_Id" class="form-control" asp-items="ViewBag.Discipline_Id"></select>
-                <span asp-validation-for="Record.Discipline_Id" class="text-danger"></span>
+                <label asp-for="Record.Discipline" class="control-label"></label>
+                <select asp-for="Record.Discipline_Id" class="form-control" asp-items="@(Model.Disciplines)"></select>
+                <span asp-validation-for="Record.Discipline.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Record.Amount" class="control-label"></label>
@@ -34,9 +34,9 @@
                 <span asp-validation-for="Record.Unit" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Record.Trainer_Id" class="control-label"></label>
-                <select asp-for="Record.Trainer_Id" class="form-control" asp-items="ViewBag.Trainer_Id"></select>
-                <span asp-validation-for="Record.Trainer_Id" class="text-danger"></span>
+                <label asp-for="Record.Trainer" class="control-label"></label>
+                <select asp-for="Record.Trainer_Id" class="form-control" asp-items="@(Model.Trainers)"></select>
+                <span asp-validation-for="Record.Trainer.FullName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
