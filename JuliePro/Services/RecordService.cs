@@ -22,7 +22,7 @@ namespace JuliePro.Services
                 .ToListAsync();
         }
 
-        public async Task<Record?> GetByIdAsync(int id)
+        public async Task<Record?> GetByIdAsync(int? id)
         {
             return await _context.Records
                 .Include(r => r.Discipline)
@@ -49,7 +49,7 @@ namespace JuliePro.Services
 
         public async Task AddAsync(Record record)
         {
-            _context.Add(record);
+            _context.Records.Add(record);
             await _context.SaveChangesAsync();
         }
 

@@ -13,11 +13,9 @@ namespace JuliePro.Controllers
 {
     public class RecordController : Controller
     {
-        private readonly JulieProDbContext _context;
         private readonly RecordService _recordService;
-        public RecordController(JulieProDbContext context, RecordService recordService)
+        public RecordController(RecordService recordService)
         {
-            _context = context;
             _recordService = recordService;
         }
 
@@ -25,8 +23,8 @@ namespace JuliePro.Controllers
         [Route("Record")]
         public async Task<IActionResult> Index()
         {
-            var julieProDbContext = _context.Records.Include(a => a.Discipline).Include(a => a.Trainer);
-            return View(await julieProDbContext.ToListAsync());
+            var julieProDbContext = _recordService.GetAllAsync();
+            return View(await julieProDbContext);
         }
 
         // GET: Record/Details/5
@@ -37,10 +35,7 @@ namespace JuliePro.Controllers
                 return NotFound();
             }
 
-            var @record = await _context.Records
-                .Include(a => a.Discipline)
-                .Include(a => a.Trainer)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var @record = await _recordService.GetByIdAsync(id);
             if (@record == null)
             {
                 return NotFound();
@@ -61,15 +56,16 @@ namespace JuliePro.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(RecordViewModel record)
+        public async Task<IActionResult> Create(RecordViewModel vm)
         {
             if (!ModelState.IsValid)
             {
-                var a = await _recordService.BuildViewModelAsync(record.Record);
-                return RedirectToAction(nameof(Index));
+                vm = await _recordService.BuildViewModelAsync(vm.Record);
+                return View(vm);
             }
-            await _recordService.AddAsync(record.Record);
-            return View(record);
+
+            await _recordService.AddAsync(vm.Record);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Record/Edit/5
@@ -92,9 +88,6 @@ namespace JuliePro.Controllers
             return View(vm);
         }
 
-        // POST: Record/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, RecordViewModel vm)
@@ -131,10 +124,7 @@ namespace JuliePro.Controllers
                 return NotFound();
             }
 
-            var @record = await _context.Records
-                .Include(a => a.Discipline)
-                .Include(a => a.Trainer)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var @record = await _recordService.GetByIdAsync(id);
             if (@record == null)
             {
                 return NotFound();
@@ -148,19 +138,13 @@ namespace JuliePro.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var @record = await _context.Records.FindAsync(id);
-            if (@record != null)
-            {
-                _context.Records.Remove(@record);
-            }
+            var record = await _recordService.GetByIdAsync(id);
+            if (record == null)
+                return NotFound();
 
-            await _context.SaveChangesAsync();
+            await _recordService.DeleteAsync(record);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RecordExists(int id)
-        {
-            return _context.Records.Any(e => e.Id == id);
-        }
     }
 }

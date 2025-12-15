@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace JuliePro.Models
 {
@@ -16,10 +17,11 @@ namespace JuliePro.Models
         public int? Discipline_Id { get; set; }
 
         [Display(Name = "Discipline")]
+        [ValidateNever]
         public virtual Discipline Discipline { get; set; }
-
+         
         [Display(Name = "Amount")]
-        [Range(0, 10000)]
+        [ValidateNever]
         public Decimal Amount { get; set; }
 
         [Display(Name = "Unit")]
@@ -29,7 +31,7 @@ namespace JuliePro.Models
         [ForeignKey("Trainer")]
         [Display(Name = "Trainer_Id")] 
         public int? Trainer_Id { get; set; }
-
+        [ValidateNever]
         [Display(Name = "Trainer")] 
         public virtual Trainer Trainer { get; set; }
     }
