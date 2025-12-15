@@ -69,5 +69,19 @@ namespace JuliePro.Services
         {
             return await _context.Records.AnyAsync(r => r.Id == id);
         }
+
+
+        public async Task<Trainer> GetRecordByTrainer(int trainerId)
+        {
+            Trainer trainer = await _context.Trainers.FindAsync(trainerId);
+
+            var records = await _context.Records
+                .Where(r => r.Trainer_Id == trainerId)
+                .ToListAsync();
+
+            trainer.Records = records;
+            return trainer;
+        }
+
     }
 }

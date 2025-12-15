@@ -1,0 +1,39 @@
+﻿@model Trainer
+
+@{
+    ViewData["Title"] = "Records du Trainer";
+}
+<h2>Les records de @Model.FirstName</h2>
+@if (!Model.Records.Any())
+{
+    <p>Aucun record pour ce trainer.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Discipline</th>
+                <th>Amount</th>
+                <th>Trainer</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var record in Model.Records)
+            {
+                <tr>
+                    <td>@record.Date.ToShortDateString()</td>
+                    <td>@record.Discipline</td>
+                    <td>@record.Amount</td>
+                    <td>@record.Trainer.FullName</td>
+                    <td><a asp-controller="Trainer" asp-action="Edit" asp-route-id="@Model.Id">Edit</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+<a asp-controller="Trainer" asp-action="Index">Back to list</a>

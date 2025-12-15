@@ -136,7 +136,7 @@ namespace JuliePro.Controllers
         // POST: Record/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmé(int id)
         {
             var record = await _recordService.GetByIdAsync(id);
             if (record == null)
@@ -146,5 +146,17 @@ namespace JuliePro.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+
+
+        public async Task<IActionResult> TrainerIndex(int trainerId)
+        {
+            var trainer = await _recordService.GetRecordByTrainer(trainerId);
+
+            if (trainer == null)
+                return NotFound();
+
+            return View("TrainerRecords", trainer);
+        }
     }
 }
