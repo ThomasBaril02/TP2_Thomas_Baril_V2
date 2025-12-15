@@ -3,13 +3,24 @@
 @{
     ViewData["Title"] = "Index";
 }
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#recordtable').DataTable();
+        });
+    </script>
+}
 
 <h1>Index</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table" id="recordtable">
     <thead>
         <tr>
             <th>
@@ -46,7 +57,11 @@
                 @Html.DisplayFor(modelItem => item.Unit)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Trainer.FullName)
+                 <a asp-controller="Record"
+                 asp-action="TrainerIndex"
+                 asp-route-trainerId="@item.Trainer.Id">
+                 @item.Trainer.FullName
+                 </a>
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
