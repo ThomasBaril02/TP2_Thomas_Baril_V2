@@ -117,13 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Create" xml:space="preserve">
-    <value>Créer</value>
+  <data name="CertificationsOf" xml:space="preserve">
+    <value>Les certifications de {0}</value>
   </data>
-  <data name="Record" xml:space="preserve">
-    <value>Record personnel des entraîneurs</value>
+  <data name="Index" xml:space="preserve">
+    <value>Liste des certifications</value>
   </data>
   <data name="backtolist" xml:space="preserve">
-    <value>Retour à la liste</value>
+    <value>Retour à la visualisation des entraîneurs</value>
+  </data>
+  <data name="CreateNew" xml:space="preserve">
+    <value>Créer un nouveau</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Éditer</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Détails</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Effacer</value>
   </data>
 </root>

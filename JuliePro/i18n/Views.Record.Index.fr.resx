@@ -117,14 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Id" xml:space="preserve">
-    <value>Id</value>
-  </data>
   <data name="Index" xml:space="preserve">
     <value>Liste des records</value>
   </data>
-  <data name="Create New" xml:space="preserve">
-    <value>Créer un nouveau</value>
+  <data name="Id" xml:space="preserve">
+    <value>Id</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>Éditer</value>
@@ -134,5 +131,8 @@
   </data>
   <data name="Delete" xml:space="preserve">
     <value>Effacer</value>
+  </data>
+  <data name="CreateNew" xml:space="preserve">
+    <value>Créer un nouveau</value>
   </data>
 </root>

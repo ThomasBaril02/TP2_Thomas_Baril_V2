@@ -1,13 +1,19 @@
+using System.Globalization;
 using JuliePro.Data;
 using JuliePro.DataSeed;
 using JuliePro.Services;
 using JuliePro.Utility;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddLocalization(options => options.ResourcesPath = "i18n");
+
 builder.Services.AddControllersWithViews()
-    .AddViewLocalization(); //TODO : ajoutez la bonne configuration
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization();
 
 builder.Services.AddDbContext<JulieProDbContext>(opt => {
 
@@ -25,11 +31,30 @@ builder.Services.AddScoped<RecordService>();
 
 builder.Services.AddSingleton<IImageFileManager, ImageFileManager>();
 
+var supportedCultures = new[]
+{
+    new CultureInfo("fr"),
+    new CultureInfo("en")
+};
 
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    options.DefaultRequestCulture = new RequestCulture("fr");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+
+    options.RequestCultureProviders = new List<IRequestCultureProvider>
+    {
+        new CookieRequestCultureProvider()
+    };
+});
 
 var app = builder.Build();
 
+var localizationOptions = app.Services
+    .GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
 
+app.UseRequestLocalization(localizationOptions);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

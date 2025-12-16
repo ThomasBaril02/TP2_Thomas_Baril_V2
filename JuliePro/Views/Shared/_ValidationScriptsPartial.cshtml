@@ -1,2 +1,19 @@
 ﻿<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+
+@using System.Globalization
+
+<script>
+    $.validator.methods.number = function (value, element) {
+
+        var culture = "@CultureInfo.CurrentCulture.Name";
+
+        // Culture française → virgule
+        if (culture === "fr") {
+            value = value.replace(",", ".");
+        }
+
+        return this.optional(element) || !isNaN(value);
+    };
+</script>
